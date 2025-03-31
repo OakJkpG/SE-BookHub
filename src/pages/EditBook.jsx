@@ -140,7 +140,7 @@ const EditBook = () => {
       }
       
       const response = await axios.put(
-        `http://https://se-bookhub-be.onrender.com/api/books/update/${bookId}/`,
+        `https://se-bookhub-be.onrender.com/api/books/update/${bookId}/`,
         formData,
         {
           headers: {
