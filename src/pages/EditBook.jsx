@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaTag, FaUpload, FaTimes, FaBook } from 'react-icons/fa';
 import { uploadImage, uploadPDF } from '../api';
+import { getAuthData } from '../utils/authUtils';
 import './EditBook.css';
 
 const EditBook = () => {
@@ -27,10 +28,16 @@ const EditBook = () => {
   useEffect(() => {
     const fetchBookData = async () => {
       try {
+        const { token } = getAuthData();
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
         const response = await axios.get(
           `https://se-bookhub-be.onrender.com/api/books/${bookId}/`,
           {
-            headers: { Authorization: `Token ${localStorage.getItem('token')}` }
+            headers: { Authorization: `Token ${token}` }
           }
         );
         
@@ -47,12 +54,18 @@ const EditBook = () => {
     };
 
     fetchBookData();
-  }, [bookId]);
+  }, [bookId, navigate]);
 
   const fetchAvailableTags = async () => {
     try {
+      const { token } = getAuthData();
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       const response = await axios.get('https://se-bookhub-be.onrender.com/api/tags/', {
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Token ${token}` }
       });
       setAvailableTags(response.data);
     } catch (err) {
@@ -97,6 +110,12 @@ const EditBook = () => {
     setLoading(true);
     
     try {
+      const { token } = getAuthData();
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       const formData = new FormData();
       
       formData.append('title', bookData.title.trim());
@@ -121,11 +140,11 @@ const EditBook = () => {
       }
       
       const response = await axios.put(
-        `https://se-bookhub-be.onrender.com/api/books/update/${bookId}/`,
+        `http://https://se-bookhub-be.onrender.com/api/books/update/${bookId}/`,
         formData,
         {
           headers: {
-            'Authorization': `Token ${localStorage.getItem('token')}`,
+            'Authorization': `Token ${token}`,
             'Content-Type': 'multipart/form-data',
           }
         }
