@@ -15,7 +15,7 @@ const BookDetail = () => {
   const navigate = useNavigate();
   
   // Get auth data from both storages
-  const { token, role } = getAuthData();
+  const { token, role, userId } = getAuthData();
 
   useEffect(() => {
     if (!token) {
@@ -243,7 +243,7 @@ const BookDetail = () => {
               </div>
             )}
             
-            {role === 'publisher' && (
+            {role === 'publisher' && Number(userId) === book.publisher_id && (
               <div className="publisher-actions-main">
                 <button className="edit-button" onClick={handleEditBook}>
                   <FaEdit /> Edit Book
